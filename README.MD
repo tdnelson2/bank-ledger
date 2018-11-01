@@ -12,7 +12,7 @@ A console app for managing financial transactions. User can do the following tas
 * Log out
 
 ### Requirements
-* [.NET Core 1.1](https://www.microsoft.com/net/download/dotnet-core/1.1) or higher
+* [.NET Core 1.1](https://www.microsoft.com/net/download/dotnet-core/1.1)
 
 ### Setup
 * Clone this project to your machine and change to the project directory.

@@ -2,7 +2,7 @@
 
 namespace BankLedger.Screens
 {
-    class RecordWithdrawl : SignedInScreen
+    class RecordWithdrawl : TransactionScreen
     {
         public override string Show()
         {
@@ -18,13 +18,10 @@ namespace BankLedger.Screens
                 var input = Console.ReadLine();
                 var amount = MakeInt(input);
 
-                if (String.IsNullOrWhiteSpace(input))
-                {
-                    Console.WriteLine("Nothing entered. Please try again.");
+                if (!IsValid(input, amount))
                     continue;
-                }
 
-                else if (input == Commands.Back.ToString())
+                if (input == Commands.Back.ToString())
                 {
                     return Route.Dashboard;
                 }
@@ -34,14 +31,10 @@ namespace BankLedger.Screens
                     return Route.RecordDeposit;
                 }
 
-                else if (input == "0")
+                else if (amount > 0)
                 {
-                    Console.WriteLine("0 is not a valid deposit.\n");
-                }
-
-                else if (amount == 0)
-                {
-                    Console.WriteLine("Invalid character(s).\n");
+                    WithdrawAmount = amount;
+                    return Route.PostWithdrawl;
                 }
 
                 else if (amount < 1)
@@ -52,19 +45,7 @@ namespace BankLedger.Screens
                                       "please type '{0}' and hit enter.\n",
                                       Commands.RecordDeposit));
                 }
-
-                else if (amount > 0)
-                {
-                    WithdrawAmount = amount;
-                    return Route.PostWithdrawl;
-                }
             }
-        }
-
-        int MakeInt(string input)
-        {
-            Int32.TryParse(input, out int integer);
-            return integer;
         }
 
         public RecordWithdrawl(string username) : base(username) { }

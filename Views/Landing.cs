@@ -7,7 +7,7 @@ namespace BankLedger.Screens
         public override string Show()
         {
             var instructions =
-                            "Wecome to Bank Ledgerizer 2000 XL™️\n" +
+                            "Welcome to Bank Ledgerizer 2000 XL™️\n" +
                             "----------------------------------\n" +
                             "Choose a selection:\n" +
               string.Format("'{0}' to login to existing account.\n" +

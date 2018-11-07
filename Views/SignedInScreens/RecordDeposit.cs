@@ -16,10 +16,15 @@ namespace BankLedger.Screens
                 Console.WriteLine(instructions);
 
                 var input = Console.ReadLine();
-                var amount = MakeInt(input);
 
-                if (!IsValid(input, amount))
-                    continue;
+                if (input.Contains("-"))
+                {
+                    Console.WriteLine(
+                        string.Format("Must be a positive number.\n" +
+                                      "If you want to make a withdraw,\n" +
+                                      "please type '{0}' and hit enter.\n",
+                                      Commands.RecordWithdrawl));
+                }
 
                 else if (input == Commands.Back.ToString())
                 {
@@ -31,23 +36,18 @@ namespace BankLedger.Screens
                     return Route.RecordWithdrawl;
                 }
 
-                else if (amount < 1)
-                {
-                    Console.WriteLine(
-                        string.Format("Must be a positive number.\n" +
-                                      "If you want to make a withdraw,\n" +
-                                      "please type '{0}' and hit enter.\n", 
-                                      Commands.RecordWithdrawl));
-                }
+                var amount = MakeInt(input);
+                if (amount == 0)
+                    continue;
 
-                else if (amount > 0)
-                {
-                    Console.WriteLine(
-                        string.Format("\n${0} Deposited successfully!", amount)
+                var formatedAmt = CurrencySimplifier.Parse(
+                        amount.ToString(), CurrencyParseMode.DecimalString
                     );
-                    DepositAmount = amount;
-                    return Route.PostDeposit;
-                }
+                Console.WriteLine(
+                    string.Format("\n${0} successfully deposited!", formatedAmt)
+                );
+                DepositAmount = amount;
+                return Route.PostDeposit;
             }
         }
 

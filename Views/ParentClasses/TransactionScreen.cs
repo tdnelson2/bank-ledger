@@ -29,7 +29,16 @@ namespace BankLedger.Screens
 
         public int MakeInt(string input)
         {
-            Int32.TryParse(input, out int integer);
+            var wholeNumberString = CurrencySimplifier
+                .Parse(input, CurrencyParseMode.WholeNumberString);
+            Console.WriteLine(wholeNumberString);
+            var integer = 0;
+            if (wholeNumberString != null)
+                int.TryParse(wholeNumberString, out integer);
+
+            if (integer == 0)
+                Console.WriteLine("\nInvalid input.\n");
+
             return integer;
         }
 

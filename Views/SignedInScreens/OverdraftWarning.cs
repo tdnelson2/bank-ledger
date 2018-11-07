@@ -4,7 +4,7 @@ namespace BankLedger.Screens
 {
     class OverdraftWarning : SignedInScreen
     {
-        readonly int Ballance;
+        readonly string Ballance;
 
         public override string Show()
         {
@@ -16,7 +16,7 @@ namespace BankLedger.Screens
                               "-------------------------\n" +
                               "You have overdrawn your account by ${1}.\n" +
                               "(Press any key to go back.)",
-                              Ballance, Ballance * -1);
+                              Ballance, Ballance);
 
             Console.WriteLine(instructions);
 
@@ -31,7 +31,8 @@ namespace BankLedger.Screens
         public OverdraftWarning(string username, int ballance)
             : base(username)
         {
-            this.Ballance = ballance;
+            this.Ballance = CurrencySimplifier
+                .Parse(ballance.ToString(), CurrencyParseMode.DecimalString);
         }
     }
 }

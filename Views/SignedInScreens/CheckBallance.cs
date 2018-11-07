@@ -4,7 +4,7 @@ namespace BankLedger.Screens
 {
     class CheckBallance : SignedInScreen
     {
-        public int Ballance;
+        public string Ballance;
 
         public override string Show()
         {
@@ -28,7 +28,8 @@ namespace BankLedger.Screens
 
         public CheckBallance(string username, int ballance) : base(username) 
         {
-            this.Ballance = ballance;
+            this.Ballance = CurrencySimplifier
+                .Parse(ballance.ToString(), CurrencyParseMode.DecimalString);
         }
     }
 }

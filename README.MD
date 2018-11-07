@@ -24,7 +24,6 @@ A console app for managing financial transactions. User can do the following tas
 * Follow the instructions on screen.
 
 ### TODO
-* Allow user to deposit/withdraw decimal amounts (currently, only whole numbers can be used).
 * Add persistent storage (currently all data is lost when the user quits).
 * Refactor to use `System.Threading.Tasks` and/or an asynchronous event based pattern.
 * Implement through a web page.

@@ -29,8 +29,7 @@ namespace BankLedger.Screens
 
         public int MakeInt(string input)
         {
-            var wholeNumberString = CurrencySimplifier
-                .Parse(input, CurrencyParseMode.WholeNumberString);
+            var wholeNumberString = CurrencyParser.ParseToWholeNumberString(input);
             Console.WriteLine(wholeNumberString);
             var integer = 0;
             if (wholeNumberString != null)

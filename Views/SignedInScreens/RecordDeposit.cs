@@ -40,9 +40,7 @@ namespace BankLedger.Screens
                 if (amount == 0)
                     continue;
 
-                var formatedAmt = CurrencySimplifier.Parse(
-                        amount.ToString(), CurrencyParseMode.DecimalString
-                    );
+                var formatedAmt = CurrencyParser.ParseToDecimalString(amount.ToString());
                 Console.WriteLine(
                     string.Format("\n${0} successfully deposited!", formatedAmt)
                 );

@@ -31,8 +31,7 @@ namespace BankLedger.Screens
         public OverdraftWarning(string username, int ballance)
             : base(username)
         {
-            this.Ballance = CurrencySimplifier
-                .Parse(ballance.ToString(), CurrencyParseMode.DecimalString);
+            this.Ballance = CurrencyParser.ParseToDecimalString(ballance.ToString());
         }
     }
 }

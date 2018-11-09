@@ -31,15 +31,11 @@ namespace BankLedger.Screens
                 var date = item.Item1.ToString();
                 if (date.Length > maxDateLength) maxDateLength = date.Length;
                 var tx = item.Item2;
-                var txStr = CurrencySimplifier.Parse(
-                    tx.ToString(), CurrencyParseMode.DecimalString
-                );
+                var txStr = CurrencyParser.ParseToDecimalString(tx.ToString());
                 if (txStr.Length > maxtxLength) maxtxLength = txStr.Length;
                 currentBallance = currentBallance + tx;
 
-                var ballanceStr = CurrencySimplifier.Parse(
-                    currentBallance.ToString(), CurrencyParseMode.DecimalString
-                );
+                var ballanceStr = CurrencyParser.ParseToDecimalString(currentBallance.ToString());
 
                 if (ballanceStr.Length > maxBallanceLength) maxBallanceLength = ballanceStr.Length;
 

@@ -6,10 +6,12 @@ using System.Text.RegularExpressions;
 namespace BankLedger
 {
 
-    public static class CurrencySimplifier
+    public static class CurrencyParser
     {
         // Adapted from example given at:
         // https://docs.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.regex?view=netframework-4.7.2
+
+        enum CurrencyParseMode { WholeNumberString, DecimalString };
 
         static bool IsValid(string input, NumberFormatInfo nfi)
         {
@@ -41,8 +43,6 @@ namespace BankLedger
 
             Regex rgx = new Regex(pattern);
 
-            Console.WriteLine("is match");
-            Console.WriteLine(rgx.IsMatch(input));
             return rgx.IsMatch(input);
         }
 
@@ -74,7 +74,7 @@ namespace BankLedger
             return input;
         }
 
-        public static string Parse(string input, CurrencyParseMode parseMode)
+        static string Parse(string input, CurrencyParseMode parseMode)
         {
             // Get the current NumberFormatInfo object to build the regular 
             // expression pattern dynamically.
@@ -92,6 +92,16 @@ namespace BankLedger
                     return ToDecimalString(input, nfi);
             }
             return null;
+        }
+
+        public static string ParseToDecimalString(string input)
+        {
+            return Parse(input, CurrencyParseMode.DecimalString);
+        }
+
+        public static string ParseToWholeNumberString(string input)
+        {
+            return Parse(input, CurrencyParseMode.WholeNumberString);
         }
     }
 }

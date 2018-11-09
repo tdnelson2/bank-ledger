@@ -8,4 +8,7 @@
   <ItemGroup>
     <Folder Include="Views\SignedInScreens\" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="CurrencyTools\CurrencyParseMode.cs" />
+  </ItemGroup>
 </Project>

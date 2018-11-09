@@ -4,51 +4,15 @@ namespace BankLedger.Screens
 {
     class RecordDeposit : TransactionScreen
     {
-        public override string Show()
+        public RecordDeposit(string username) : base(username)
         {
-            var instructions =
-                    string.Format("Enter an ammount.\n" +
-                      "Whole numbers (integers) only.\n" +
-                      "To abort, type '{0}' and hit enter.",
-                      Commands.Back);
-            while (true)
-            {
-                Console.WriteLine(instructions);
-
-                var input = Console.ReadLine();
-
-                if (input.Contains("-"))
-                {
-                    Console.WriteLine(
-                        string.Format("Must be a positive number.\n" +
-                                      "If you want to make a withdraw,\n" +
-                                      "please type '{0}' and hit enter.\n",
-                                      Commands.RecordWithdrawl));
-                }
-
-                else if (input == Commands.Back.ToString())
-                {
-                    return Route.Dashboard;
-                }
-
-                else if (input == Commands.RecordWithdrawl.ToString())
-                {
-                    return Route.RecordWithdrawl;
-                }
-
-                var amount = MakeInt(input);
-                if (amount == 0)
-                    continue;
-
-                var formatedAmt = CurrencyParser.ParseToDecimalString(amount.ToString());
-                Console.WriteLine(
-                    string.Format("\n${0} successfully deposited!", formatedAmt)
-                );
-                DepositAmount = amount;
-                return Route.PostDeposit;
-            }
+            this._transactionName = "deposit";
+            this._successRoute = Route.PostDeposit;
+            this._successMessage = "\n${0} successfully deposited!";
+            this._transactionType = _TransactionType.Deposit;
+            this._alternateTransaction = "withdraw";
+            this._alternateTransactionRoute = Route.RecordWithdrawl;
+            this._alternateTransactionCommand = Commands.RecordWithdrawl;
         }
-
-        public RecordDeposit(string username) : base(username) {}
     }
 }

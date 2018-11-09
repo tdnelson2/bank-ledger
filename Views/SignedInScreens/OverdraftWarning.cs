@@ -15,7 +15,7 @@ namespace BankLedger.Screens
                               "${0}\n" +
                               "-------------------------\n" +
                               "You have overdrawn your account by ${1}.\n" +
-                              "(Press any key to go back.)",
+                              "(Press any key to continue.)",
                               Ballance, Ballance);
 
             Console.WriteLine(instructions);

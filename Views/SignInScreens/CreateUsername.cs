@@ -19,8 +19,7 @@ namespace BankLedger.Screens
                     continue;
 
                 Username = input;
-                Console.WriteLine("\nusername validated\n");
-                return Route.CreatePassword;
+                return Route.PostNewUsername;
             }
         }
     }

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using BankLedger.CurrencyTools;
 
 namespace BankLedger.Screens
 {
     class TransactionHistory : SignedInScreen
     {
-        readonly List<Tuple<DateTime, int>> History;
+        readonly List<Tuple<DateTime, int>> _history;
+        CurrencyParser _parser;
 
         string FormatSpacing(string input, int length)
         {
@@ -19,60 +21,63 @@ namespace BankLedger.Screens
             var amountLabel = "AMOUNT";
             var ballanceLabel = "BALLANCE";
             var spacingLength = 4;
-            var maxDateLength = 0;
-            var maxtxLength = 0;
-            var maxBallanceLength = 0;
+            var maxDateLength = dateLabel.Length;
+            var maxtxLength = amountLabel.Length;
+            var maxBallanceLength = ballanceLabel.Length;
             var currentBallance = 0;
             var txLines = new List<Tuple<string, string, string>>();
 
-            //for (var i = History.Count - 1; i > -1; i--)
-            foreach (var item in History)
+            // Determine the width of each column 
+            // (they'll fallback to the label width if table is empty)
+            // and calculate the running ballance for each row.
+            foreach (var item in _history)
             {
                 var date = item.Item1.ToString();
                 if (date.Length > maxDateLength) maxDateLength = date.Length;
                 var tx = item.Item2;
-                var txStr = CurrencyParser.ParseToDecimalString(tx.ToString());
+                var txStr = _parser.ParseToDecimalString(tx.ToString());
                 if (txStr.Length > maxtxLength) maxtxLength = txStr.Length;
                 currentBallance = currentBallance + tx;
 
-                var ballanceStr = CurrencyParser.ParseToDecimalString(currentBallance.ToString());
+                var ballanceStr = _parser.ParseToDecimalString(currentBallance.ToString());
 
                 if (ballanceStr.Length > maxBallanceLength) maxBallanceLength = ballanceStr.Length;
 
                 txLines.Add(new Tuple<string, string, string>(date, txStr, ballanceStr));
             }
 
-            if (maxDateLength < dateLabel.Length) maxDateLength = dateLabel.Length;
-            if (maxtxLength < amountLabel.Length) maxtxLength = amountLabel.Length;
-            if (maxBallanceLength < ballanceLabel.Length) maxBallanceLength = ballanceLabel.Length;
-
+            // Add spacing between columns.
             maxDateLength += spacingLength;
             maxtxLength += spacingLength;
 
+            // Create a divider.
             var dividerLength = maxDateLength + maxtxLength + maxBallanceLength;
             var divider = String.Concat(Enumerable.Repeat("-", dividerLength)) + "\n";
 
+            // Create the column headers.
             var columnHeaders = "";
             columnHeaders += FormatSpacing(dateLabel, maxDateLength);
             columnHeaders += FormatSpacing(amountLabel, maxtxLength);
             columnHeaders += ballanceLabel + "\n";
 
-            var history = "";
+            // Format the data for the table.
+            var rows = "";
             for (var i = txLines.Count - 1; i > -1; i--)
             {
                 var record = txLines[i];
-                var line = "";
-                line += FormatSpacing(record.Item1, maxDateLength);
-                line += FormatSpacing(record.Item2, maxtxLength);
-                line += record.Item3 + "\n";
-                history += line;
+                var row = "";
+                row += FormatSpacing(record.Item1, maxDateLength);
+                row += FormatSpacing(record.Item2, maxtxLength);
+                row += record.Item3 + "\n";
+                rows += row;
             }
 
+            // Assemble the table.
             var instructions = "Transaction history for " + Username + ":\n" +
                                 divider +
                                 columnHeaders +
                                 divider +
-                                history +
+                                rows +
                                 divider +
                                 "(Press any key to continue.)\n";
 
@@ -87,10 +92,12 @@ namespace BankLedger.Screens
         }
 
         public TransactionHistory(string username,
-                                  List<Tuple<DateTime, int>> history)
+                                  List<Tuple<DateTime, int>> history,
+                                  CurrencyParser parser)
             : base(username) 
         {
-            this.History = history;
+            this._parser = parser;
+            this._history = history;
         }
     }
 }

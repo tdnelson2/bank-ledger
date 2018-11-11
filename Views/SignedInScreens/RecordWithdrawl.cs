@@ -1,10 +1,11 @@
-﻿using System;
+﻿using BankLedger.CurrencyTools;
 
 namespace BankLedger.Screens
 {
     class RecordWithdrawl : TransactionScreen
     {
-        public RecordWithdrawl(string username) : base(username)
+        public RecordWithdrawl(string username, CurrencyParser parser)
+            : base(username, parser)
         {
             this._transactionName = "withdraw";
             this._successRoute = Route.PostWithdrawl;

@@ -3,17 +3,17 @@ using System.Linq;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace BankLedger
+namespace BankLedger.CurrencyTools
 {
 
-    public static class CurrencyParser
+    public class CurrencyParser
     {
         // Adapted from example given at:
         // https://docs.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.regex?view=netframework-4.7.2
 
         enum CurrencyParseMode { WholeNumberString, DecimalString };
 
-        static bool IsValid(string input, NumberFormatInfo nfi)
+        bool IsValid(string input, NumberFormatInfo nfi)
         {
 
             // To avoid an error for single digit inputs...
@@ -46,7 +46,7 @@ namespace BankLedger
             return rgx.IsMatch(input);
         }
 
-        static string ToDecimalString(string input, NumberFormatInfo nfi)
+        string ToDecimalString(string input, NumberFormatInfo nfi)
         {
             // Check for situation where number of digits is smaller
             // than expected number of decimal digits
@@ -63,7 +63,7 @@ namespace BankLedger
             return number;
         }
 
-        static string ToWholeNumberString(string input, NumberFormatInfo nfi)
+        string ToWholeNumberString(string input, NumberFormatInfo nfi)
         {
             if (!input.Contains(nfi.CurrencyDecimalSeparator))
                 // Add extra digits.
@@ -74,7 +74,7 @@ namespace BankLedger
             return input;
         }
 
-        static string Parse(string input, CurrencyParseMode parseMode)
+        string Parse(string input, CurrencyParseMode parseMode)
         {
             // Get the current NumberFormatInfo object to build the regular 
             // expression pattern dynamically.
@@ -94,12 +94,12 @@ namespace BankLedger
             return null;
         }
 
-        public static string ParseToDecimalString(string input)
+        public string ParseToDecimalString(string input)
         {
             return Parse(input, CurrencyParseMode.DecimalString);
         }
 
-        public static string ParseToWholeNumberString(string input)
+        public string ParseToWholeNumberString(string input)
         {
             return Parse(input, CurrencyParseMode.WholeNumberString);
         }

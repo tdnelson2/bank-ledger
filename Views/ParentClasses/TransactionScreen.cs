@@ -1,4 +1,5 @@
 using System;
+using BankLedger.CurrencyTools;
 
 namespace BankLedger.Screens
 {
@@ -13,6 +14,8 @@ namespace BankLedger.Screens
         internal string _alternateTransactionRoute;
         internal string _successRoute;
         internal string _successMessage;
+
+        CurrencyParser _parser;
 
         public override string Show()
         {
@@ -49,11 +52,18 @@ namespace BankLedger.Screens
                     return _alternateTransactionRoute;
                 }
 
-                var amount = MakeInt(input);
-                if (amount == 0)
-                    continue;
+                var wholeNumberString = _parser.ParseToWholeNumberString(input);
+                var amount = 0;
+                if (wholeNumberString != null)
+                    int.TryParse(wholeNumberString, out amount);
 
-                var formatedAmt = CurrencyParser.ParseToDecimalString(amount.ToString());
+                if (amount == 0)
+                {
+                    Console.WriteLine("\nInvalid input.\n");
+                    continue;
+                }
+
+                var formatedAmt = _parser.ParseToDecimalString(amount.ToString());
                 Console.WriteLine(
                     string.Format(_successMessage, formatedAmt)
                 );
@@ -64,19 +74,10 @@ namespace BankLedger.Screens
             }
         }
 
-        int MakeInt(string input)
+        public TransactionScreen(string username, CurrencyParser parser)
+            : base(username) 
         {
-            var wholeNumberString = CurrencyParser.ParseToWholeNumberString(input);
-            var integer = 0;
-            if (wholeNumberString != null)
-                int.TryParse(wholeNumberString, out integer);
-
-            if (integer == 0)
-                Console.WriteLine("\nInvalid input.\n");
-
-            return integer;
+            this._parser = parser;
         }
-
-        public TransactionScreen(string username) : base(username) { }
     }
 }

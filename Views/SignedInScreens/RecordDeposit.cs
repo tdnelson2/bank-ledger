@@ -1,10 +1,11 @@
-﻿using System;
+﻿using BankLedger.CurrencyTools;
 
 namespace BankLedger.Screens
 {
     class RecordDeposit : TransactionScreen
     {
-        public RecordDeposit(string username) : base(username)
+        public RecordDeposit(string username, CurrencyParser parser)
+            : base(username, parser)
         {
             this._transactionName = "deposit";
             this._successRoute = Route.PostDeposit;

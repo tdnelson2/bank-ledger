@@ -1,4 +1,5 @@
 ﻿using System;
+using BankLedger.CurrencyTools;
 
 namespace BankLedger.Screens
 {
@@ -26,9 +27,9 @@ namespace BankLedger.Screens
 
         }
 
-        public CheckBallance(string username, int ballance) : base(username) 
+        public CheckBallance(string username, int ballance, CurrencyParser parser) : base(username) 
         {
-            this.Ballance = CurrencyParser.ParseToDecimalString(ballance.ToString());
+            this.Ballance = parser.ParseToDecimalString(ballance.ToString());
         }
     }
 }

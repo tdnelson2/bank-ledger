@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using BankLedger.Screens;
 using BankLedger.Model;
+using BankLedger.CurrencyTools;
 
 namespace BankLedger
 {
     class ConsoleController
     {
-        public void Show(DataModel model)
+        DataModel _model;
+        CurrencyParser _parser;
+
+        public void Show()
         {
             var routeHistory = new List<string>();
 
@@ -17,7 +21,7 @@ namespace BankLedger
             var screen = new Screen();
             while (true)
             {
-                screen = GetScreen(route, screen, model);
+                screen = GetScreen(route, screen, _model);
                 if (screen == null)
                     break;
                 route = screen.Show();
@@ -42,7 +46,7 @@ namespace BankLedger
             }
             else if (Route.PostSignInUsername == route)
             {
-                return ValidateUsername(screen.Username, model);
+                return ValidateUsername(screen.Username);
             }
             else if (Route.SignInPassword == route)
             {
@@ -50,12 +54,15 @@ namespace BankLedger
             }
             else if (Route.PostSignInPassword == route)
             {
-                return ValidatePassword(screen.Username, 
-                                        screen.Password, model);
+                return ValidatePassword(screen.Username, screen.Password);
             }
             else if (Route.CreateUsername == route)
             {
                 return new CreateUsername();
+            }
+            else if (Route.PostNewUsername == route)
+            {
+                return ValidateNewUsername(screen.Username);
             }
             else if (Route.CreatePassword == route)
             {
@@ -72,7 +79,7 @@ namespace BankLedger
             }
             else if (Route.RecordDeposit == route)
             {
-                return new RecordDeposit(screen.Username);
+                return new RecordDeposit(screen.Username, _parser);
             }
             else if (Route.PostDeposit == route)
             {
@@ -81,22 +88,21 @@ namespace BankLedger
             }
             else if (Route.RecordWithdrawl == route)
             {
-                return new RecordWithdrawl(screen.Username);
+                return new RecordWithdrawl(screen.Username, _parser);
             }
             else if (Route.PostWithdrawl == route)
             {
-                return ParseWithdraw(screen.Username, screen.WithdrawAmount, 
-                                     model);
+                return ParseWithdraw(screen.Username, screen.WithdrawAmount);
             }
             else if (Route.CheckBalance == route)
             {
                 var ballance = model.GetBallance(screen.Username);
-                return new CheckBallance(screen.Username, ballance);
+                return new CheckBallance(screen.Username, ballance, _parser);
             }
             else if (Route.TransactionHistory == route)
             {
                 var history = model.GetTransactionHistory(screen.Username);
-                return new TransactionHistory(screen.Username, history);
+                return new TransactionHistory(screen.Username, history, _parser);
             }
             else if (Route.LogOut == route)
             {
@@ -113,28 +119,39 @@ namespace BankLedger
             }
         }
 
-        Screen ValidateUsername(string username, DataModel model)
+        Screen ValidateNewUsername(string username)
         {
-            return model.ContainsUser(username) 
+            return _model.ContainsUser(username)
+                        ? new UsenameTaken()
+                        : (Screen)new CreatePassword(username);
+        }
+
+        Screen ValidateUsername(string username)
+        {
+            return _model.ContainsUser(username) 
                         ? new SignInPassword(username) 
                         : (Screen)new UsernameNotFound();
         }
 
-        Screen ValidatePassword(string username,
-                                string password, DataModel model)
+        Screen ValidatePassword(string username, string password)
         {
-            return model.Authorize(username, password) 
+            return _model.Authorize(username, password) 
                         ? new Dashboard(username) 
                         : (Screen)new PasswordNotFound(username);
         }
 
-        Screen ParseWithdraw(string username,
-                             int ammount, DataModel model)
+        Screen ParseWithdraw(string username, int ammount)
         {
-            var ballance = model.RecordTransaction(username, ammount * -1);
+            var ballance = _model.RecordTransaction(username, ammount * -1);
             return ballance < 0 
-                ? new OverdraftWarning(username, ballance) 
+                ? new OverdraftWarning(username, ballance, _parser) 
                 : (Screen)new Dashboard(username);
+        }
+
+        public ConsoleController(DataModel model, CurrencyParser parser)
+        {
+            this._model = model;
+            this._parser = parser;
         }
     }
 }
